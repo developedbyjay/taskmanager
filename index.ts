@@ -1,4 +1,4 @@
-import { TaskManager } from "./taskmanager";
+import { Priority, TaskManager } from "./taskmanager";
 import * as readline from "readline";
 
 const taskManager = new TaskManager();
@@ -15,7 +15,9 @@ function showMenu() {
   console.log("3. Mark Task as Done");
   console.log("4. Delete Task");
   console.log("5. Edit Task");
-  console.log("6. Exit");
+  console.log("6. Filter Task");
+  console.log("7. Sort Tasks");
+  console.log("8. Exit");
 }
 
 function mainMenu() {
@@ -84,6 +86,52 @@ function mainMenu() {
         });
         break;
       case "6":
+        rl.question(
+          "How do you want to filter?  \n1. Priority \n2. Status \n3. Due soon\n",
+          (option) => {
+            let filter: { [key: string]: string } = {};
+            switch (option) {
+              case "1":
+                rl.question(
+                  "Enter the priority level to filter (low,medium,high) \n",
+                  (priority: string) => {
+                    filter.priority = priority;
+                    taskManager.filterTask(filter);
+                    filter = {};
+                    mainMenu();
+                  }
+                );
+                break;
+              case "2":
+                rl.question(
+                  "Enter the status to filter by (pending,success,failed) \n",
+                  (status: string) => {
+                    filter.status = status;
+                    taskManager.filterTask(filter);
+                    filter = {};
+                    mainMenu();
+                  }
+                );
+
+                break;
+              case "3":
+                taskManager.filterTask(filter);
+                mainMenu();
+                break;
+              default:
+                console.log("Invalid choice");
+                mainMenu();
+            }
+          }
+        );
+        break;
+      case "7":
+        rl.question("Sort by (dueDate/priority/status): ", (sortBy) => {
+          taskManager.sortTasks(sortBy as "dueDate" | "priority" | "status");
+          mainMenu();
+        });
+        break;
+      case "8":
         console.log("👋 Goodbye!");
         rl.close();
         break;

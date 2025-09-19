@@ -19,7 +19,7 @@ export class Task {
   static setNextId(id: number): void {
     Task.idCounter = id;
   }
-  
+
   editTask(
     updates: Partial<{
       title: string;
